@@ -1,21 +1,21 @@
-using KSemenenko.ColorThief;
 using Microsoft.Extensions.Options;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
+using ColorHelper;
 
 namespace ThFnsc.SpotifyColorSync.Services;
 
 public class Worker : BackgroundService
 {
     private string? _lastPicture;
-    private readonly ColorThief _colorThief;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IColorPicker _colorPicker;
     private readonly HashSet<string> _lightsTurnedOn = new();
 
-    public Worker(IServiceProvider serviceProvider)
+    public Worker(
+        IServiceProvider serviceProvider,
+        IColorPicker colorPicker)
     {
-        _colorThief = new ColorThief();
         _serviceProvider = serviceProvider;
+        _colorPicker = colorPicker;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -87,21 +87,18 @@ public class Worker : BackgroundService
         return state.State is "on";
     }
 
-    private async Task<QuantizedColor> GetColorFromImageUrl(IHassClient hassClient, string pictureUrl)
+    private async Task<HSL> GetColorFromImageUrl(IHassClient hassClient, string pictureUrl)
     {
         var imageStream = await hassClient.GetImageAsync(pictureUrl);
-        var image = Image.Load<Rgba32>(imageStream);
-        return _colorThief.GetPalette(image).Last();
+        return await _colorPicker.GetSignatureColorAsync(imageStream);
     }
 
-    private static Task SetLightsColorAsync(IHassClient hassClient, string[] entityIds, QuantizedColor color)
+    private static Task SetLightsColorAsync(IHassClient hassClient, string[] entityIds, HSL color)
     {
-        var hsl = ColorHelper.ColorConverter.RgbToHsv(new(color.Color.R, color.Color.G, color.Color.B));
-
         var tasks = entityIds.Select(e => hassClient.Service.CallService("light.turn_on", new
         {
             entity_id = e,
-            hs_color = new int[] { hsl.H, hsl.S < 5 ? 0 : 100 }
+            hs_color = new int[] { color.H, color.S < 5 ? 0 : 100 }
         }));
 
         return Task.WhenAll(tasks);

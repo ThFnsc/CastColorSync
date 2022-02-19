@@ -49,11 +49,6 @@ FROM runtime AS final
 #Basic configs
 WORKDIR /app
 
-#Copy build files that rarely change
-#COPY --from=publish /app/publish/runtimes ./runtimes
-COPY --from=publish /app/publish/?? ./
-COPY --from=publish /app/publish/??-??* ./
-
 #Copy the important stuff
 COPY --from=publish /app/publish/[^ThFnsc.]*.dll ./
 COPY --from=publish /app/publish .

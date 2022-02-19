@@ -12,9 +12,6 @@
     <PackageReference Include="HADotNet.Core" Version="1.6.0" />
 	<PackageReference Include="ColorHelper" Version="1.6.1" />
 	<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\KSemenenko.ColorThief\KSemenenko.ColorThief.csproj" />
+	<PackageReference Include="SixLabors.ImageSharp" Version="2.0.0" />
   </ItemGroup>
 </Project>
