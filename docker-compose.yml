@@ -1,0 +1,11 @@
+version: '3'
+services:
+  spotify-sync:
+    build: .
+    env_file: .env
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '.25'
+          memory: 64MB

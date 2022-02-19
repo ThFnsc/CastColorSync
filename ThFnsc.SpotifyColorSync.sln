@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B0AC6A9F-949B-45A6-B726-5E6E8615B41A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSemenenko.ColorThief", "src\KSemenenko.ColorThief\KSemenenko.ColorThief.csproj", "{DC7C5167-3B94-4B13-95C4-897EC77C2C15}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThFnsc.SpotifyColorSync", "src\ThFnsc.SpotifyColorSync\ThFnsc.SpotifyColorSync.csproj", "{3FF43A59-A916-4581-8CE6-E6D56722E3DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{75A84206-FFED-47F8-9CF0-0759E503107D}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.gitignore = .gitignore
+		Dockerfile = Dockerfile
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DC7C5167-3B94-4B13-95C4-897EC77C2C15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC7C5167-3B94-4B13-95C4-897EC77C2C15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC7C5167-3B94-4B13-95C4-897EC77C2C15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC7C5167-3B94-4B13-95C4-897EC77C2C15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FF43A59-A916-4581-8CE6-E6D56722E3DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FF43A59-A916-4581-8CE6-E6D56722E3DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FF43A59-A916-4581-8CE6-E6D56722E3DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FF43A59-A916-4581-8CE6-E6D56722E3DF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DC7C5167-3B94-4B13-95C4-897EC77C2C15} = {B0AC6A9F-949B-45A6-B726-5E6E8615B41A}
+		{3FF43A59-A916-4581-8CE6-E6D56722E3DF} = {B0AC6A9F-949B-45A6-B726-5E6E8615B41A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B3CB65D6-1DCF-48E4-B822-E6AFEAF790E6}
+	EndGlobalSection
+EndGlobal

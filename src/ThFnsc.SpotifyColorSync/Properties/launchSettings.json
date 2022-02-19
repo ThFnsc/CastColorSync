@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "ThFnsc.SpotifyColorSync": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
