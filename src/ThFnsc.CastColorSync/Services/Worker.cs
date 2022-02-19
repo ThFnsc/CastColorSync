@@ -31,8 +31,11 @@ public class Worker : BackgroundService
                 throw new ArgumentException(nameof(appSettings.Hass));
             if (appSettings.Hass.Lights is null)
                 throw new ArgumentException(nameof(appSettings.Hass.Lights));
+            if (appSettings.Hass.SourceDevices is null)
+                throw new ArgumentException(nameof(appSettings.Hass.Lights));
 
-            var pictureUrl = await PlayingAlbumImageAsync(hassClient, appSettings);
+            var pictureUrls = await Task.WhenAll(appSettings.Hass.SourceDevices.Select(d=>PlayingAlbumImageAsync(hassClient, d)));
+            var pictureUrl = pictureUrls.Where(p => p is not null).FirstOrDefault();
 
             if (pictureUrl != _lastPicture)
             {
@@ -73,9 +76,9 @@ public class Worker : BackgroundService
         _lightsTurnedOn.Clear();
     }
 
-    private static async Task<string?> PlayingAlbumImageAsync(IHassClient hassClient, AppSettings appSettings)
+    private static async Task<string?> PlayingAlbumImageAsync(IHassClient hassClient, string entityId)
     {
-        var state = await hassClient.States.GetState(appSettings.Hass?.SourceDevice);
+        var state = await hassClient.States.GetState(entityId);
         if (state.State is "playing" && state.Attributes.TryGetValue("entity_picture_local", out var pictureObject) && pictureObject is string pictureUrl)
             return pictureUrl;
         return null;
