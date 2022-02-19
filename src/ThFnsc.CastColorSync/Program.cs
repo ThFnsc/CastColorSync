@@ -1,6 +1,6 @@
-using ThFnsc.SpotifyColorSync;
-using ThFnsc.SpotifyColorSync.Configuration;
-using ThFnsc.SpotifyColorSync.Services;
+using ThFnsc.CastColorSync;
+using ThFnsc.CastColorSync.Configuration;
+using ThFnsc.CastColorSync.Services;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>

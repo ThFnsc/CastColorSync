@@ -1,6 +1,7 @@
 version: '3'
 services:
-  spotify-sync:
+  cast-sync:
+    image: thiagofnsc/castcolorsync
     build: .
     env_file: .env
     restart: always

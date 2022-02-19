@@ -1,9 +1,10 @@
 ﻿using HADotNet.Core;
 using HADotNet.Core.Clients;
 using Microsoft.Extensions.Options;
-using ThFnsc.SpotifyColorSync.Services;
+using ThFnsc.CastColorSync;
+using ThFnsc.CastColorSync.Services;
 
-namespace ThFnsc.SpotifyColorSync.Configuration;
+namespace ThFnsc.CastColorSync.Configuration;
 
 public static class HomeAssistantConfiguration
 {

@@ -3,7 +3,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
-namespace ThFnsc.SpotifyColorSync.Services;
+namespace ThFnsc.CastColorSync.Services;
 public class ColorPicker : IColorPicker
 {
     private const int _resizeTo = 32;

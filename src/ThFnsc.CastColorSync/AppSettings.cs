@@ -1,4 +1,4 @@
-﻿namespace ThFnsc.SpotifyColorSync;
+﻿namespace ThFnsc.CastColorSync;
 
 public class AppSettings
 {

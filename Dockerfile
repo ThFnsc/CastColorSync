@@ -40,7 +40,7 @@ RUN dotnet build --no-restore -c Release
 FROM build as publish
 
 #Publishes the application
-RUN dotnet publish --no-build -c Release -o /app/publish src/ThFnsc.SpotifyColorSync
+RUN dotnet publish --no-build -c Release -o /app/publish src/ThFnsc.CastColorSync
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~ final stage ~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -53,4 +53,4 @@ WORKDIR /app
 COPY --from=publish /app/publish/[^ThFnsc.]*.dll ./
 COPY --from=publish /app/publish .
 
-ENTRYPOINT dotnet ThFnsc.SpotifyColorSync.dll
+ENTRYPOINT dotnet ThFnsc.CastColorSync.dll

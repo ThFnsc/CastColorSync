@@ -1,7 +1,7 @@
 ﻿
 using HADotNet.Core.Clients;
 
-namespace ThFnsc.SpotifyColorSync.Services;
+namespace ThFnsc.CastColorSync.Services;
 
 public interface IHassClient
 {

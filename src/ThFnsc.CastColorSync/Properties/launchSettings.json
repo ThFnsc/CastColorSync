@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "ThFnsc.SpotifyColorSync": {
+    "ThFnsc.CastColorSync": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "environmentVariables": {

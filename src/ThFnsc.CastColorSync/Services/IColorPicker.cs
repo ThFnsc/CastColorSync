@@ -1,6 +1,6 @@
 ﻿using ColorHelper;
 
-namespace ThFnsc.SpotifyColorSync.Services;
+namespace ThFnsc.CastColorSync.Services;
 
 public interface IColorPicker
 {

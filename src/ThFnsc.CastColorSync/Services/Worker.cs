@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
 using ColorHelper;
 
-namespace ThFnsc.SpotifyColorSync.Services;
+namespace ThFnsc.CastColorSync.Services;
 
 public class Worker : BackgroundService
 {
