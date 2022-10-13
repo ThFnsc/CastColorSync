@@ -13,8 +13,6 @@ public static class HomeAssistantConfiguration
         services.AddHttpClient<IHassClient, HassClient>((httpClient, provider) =>
         {
             var appSettings = provider.GetRequiredService<IOptions<AppSettings>>();
-            if (appSettings.Value.Hass is null)
-                throw new NullReferenceException(nameof(appSettings.Value.Hass));
 
             if (!ClientFactory.IsInitialized)
                 ClientFactory.Initialize(appSettings.Value.Hass.Url, appSettings.Value.Hass.Token);

@@ -20,48 +20,47 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
-            using var scope = _serviceProvider.CreateScope();
-            var service = scope.ServiceProvider;
-            var hassClient = service.GetRequiredService<IHassClient>();
-            var appSettings = service.GetRequiredService<IOptions<AppSettings>>().Value;
-
-            if (appSettings.Hass is null)
-                throw new ArgumentException(nameof(appSettings.Hass));
-            if (appSettings.Hass.Lights is null)
-                throw new ArgumentException(nameof(appSettings.Hass.Lights));
-            if (appSettings.Hass.SourceDevices is null)
-                throw new ArgumentException(nameof(appSettings.Hass.Lights));
-
-            var pictureUrls = await Task.WhenAll(appSettings.Hass.SourceDevices.Select(d=>PlayingAlbumImageAsync(hassClient, d)));
-            var pictureUrl = pictureUrls.Where(p => p is not null).FirstOrDefault();
-
-            if (pictureUrl != _lastPicture)
+            while (!stoppingToken.IsCancellationRequested)
             {
-                _lastPicture = pictureUrl;
+                using var scope = _serviceProvider.CreateScope();
+                var service = scope.ServiceProvider;
+                var hassClient = service.GetRequiredService<IHassClient>();
+                var appSettings = service.GetRequiredService<IOptions<AppSettings>>().Value;
 
-                if (pictureUrl is null)
-                    await TurnLightsBackOffAsync(hassClient);
-                else
+                var pictureUrls = await Task.WhenAll(appSettings.Hass.SourceDevices.Select(d => PlayingAlbumImageAsync(hassClient, d)));
+                var pictureUrl = pictureUrls.Where(p => p is not null).FirstOrDefault();
+
+                if (pictureUrl != _lastPicture)
                 {
-                    var states = await Task.WhenAll(appSettings.Hass.Lights.Select(async light => (light, state: await GetLightStateAsync(hassClient, light))));
+                    _lastPicture = pictureUrl;
 
-                    foreach (var (light, state) in states.Where(t => !t.state))
-                        _lightsTurnedOn.Add(light);
+                    if (pictureUrl is null)
+                        await TurnLightsBackOffAsync(hassClient);
+                    else
+                    {
+                        var states = await Task.WhenAll(appSettings.Hass.Lights.Select(async light => (light, state: await GetLightStateAsync(hassClient, light))));
 
-                    var color = await GetColorFromImageUrl(hassClient, pictureUrl);
+                        foreach (var (light, state) in states.Where(t => !t.state))
+                            _lightsTurnedOn.Add(light);
 
-                    await SetLightsColorAsync(hassClient, appSettings.Hass.Lights, color);
+                        var color = await GetColorFromImageUrl(hassClient, pictureUrl);
+
+                        await SetLightsColorAsync(hassClient, appSettings.Hass.Lights, color);
+                    }
                 }
+                try
+                {
+                    await Task.Delay(1000, stoppingToken);
+                }
+                catch (TaskCanceledException) { }
             }
-            try
-            {
-                await Task.Delay(1000, stoppingToken);
-            }
-            catch (TaskCanceledException) { }
         }
-        await TurnLightsBackOffAsync(_serviceProvider.GetRequiredService<IHassClient>());
+        finally
+        {
+            await TurnLightsBackOffAsync(_serviceProvider.GetRequiredService<IHassClient>());
+        }
     }
 
     private static Task TurnLightOffAsync(IHassClient hassClient, string entityId) =>

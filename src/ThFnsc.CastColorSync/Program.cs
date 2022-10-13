@@ -7,7 +7,9 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddHostedService<Worker>();
         services.AddSingleton<IColorPicker, ColorPicker>();
-        services.Configure<AppSettings>(context.Configuration.GetSection(nameof(AppSettings)));
+        services.AddOptions<AppSettings>()
+            .BindConfiguration(nameof(AppSettings))
+            .Validate(opt => opt.Validate());
         services.AddHass();
     })
     .Build();
