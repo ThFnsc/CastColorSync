@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>ThFnsc.CastColorSync</UserSecretsId>
-	<ContainerImageName>thiagofnsc/castcolorsync</ContainerImageName>
+    <ContainerRepository>thiagofnsc/castcolorsync</ContainerRepository>
 	<ContainerImageTag>latest</ContainerImageTag>
   </PropertyGroup>
 
