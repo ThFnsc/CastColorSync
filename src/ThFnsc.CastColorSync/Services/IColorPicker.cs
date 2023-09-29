@@ -4,5 +4,5 @@ namespace ThFnsc.CastColorSync.Services;
 
 public interface IColorPicker
 {
-    Task<HSL> GetSignatureColorAsync(Stream imageStream);
+    Task<Rgb24[]> GetColorPalette(Stream imageStream, int colors);
 }

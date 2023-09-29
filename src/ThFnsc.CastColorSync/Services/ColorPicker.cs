@@ -1,95 +1,49 @@
 ﻿using ColorHelper;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 
 namespace ThFnsc.CastColorSync.Services;
+
 public class ColorPicker : IColorPicker
 {
     private const int _resizeTo = 32;
-    private const float _scoreCutoff = .1f;
 
-    public async Task<HSL> GetSignatureColorAsync(Stream imageStream)
+    public async Task<Rgb24[]> GetColorPalette(Stream imageStream, int colors)
     {
         using var image = await Image.LoadAsync<Rgb24>(imageStream);
         image.Mutate(x => x.Resize(_resizeTo, _resizeTo));
 
-        var hslPixels = GetHSLPixels(image);
+        var (pixels, weights) = ImageToArray(image);
+        var kmeans = new Accord.MachineLearning.KMeans(colors);
 
-        var histogram = MakeHistogram(hslPixels);
+        var clusters = kmeans.Learn(pixels, weights);
+        var distincts = kmeans.Centroids;
 
-        var recordIndex = GetRecordIndex(histogram);
+        var palette = new Rgb24[colors];
+        for (var i = 0; i < colors; i++)
+            palette[i] = new((byte)distincts[i][0], (byte)distincts[i][1], (byte)distincts[i][2]);
 
-        if (recordIndex == -1)
-            return new HSL(0, 0, 100);
-        return new HSL(recordIndex, 100, 50);
+        return palette;
     }
 
-    private static int GetRecordIndex(float[] input)
+    private static (double[][] pixels, double[] weights) ImageToArray(Image<Rgb24> image)
     {
-        const int around = 3;
-        const int total = around * 2 + 1;
-        var mask = new float[total];
-        for (int i = 0; i <= around; i++)
-        {
-            var relevance = 1.0f / (i + 1);
-            mask[around + i] = relevance;
-            mask[around - i] = relevance;
-        }
+        int width = image.Width;
+        int height = image.Height;
 
-        int recordIndex = -1;
-        float recordAverage = 0;
-        for (int i = 0; i < input.Length; i++)
-        {
-            float average = 0;
-            var offset = i - around;
+        double[][] pixels = new double[width * height][];
+        double[] weights = new double[width * height];
 
-            for (int j = 0; j < total; j++)
+        for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++)
             {
-                var index = offset + j;
-                if (index < 0)
-                    index = input.Length + index;
-                else if (index >= input.Length)
-                    index -= input.Length;
-                average += mask[j] * input[index];
+                var pixel = image[x, y];
+                var hsl = ColorConverter.RgbToHsl(new(pixel.R, pixel.G, pixel.B));
+                var position = y * width + x;
+                pixels[position] = new double[] { pixel.R, pixel.G, pixel.B };
+                weights[position] = (hsl.S / 255.0) * (hsl.L / 255.0);
             }
 
-            if (average > recordAverage)
-            {
-                recordAverage = average;
-                recordIndex = i;
-            }
-        }
-        return recordIndex;
-    }
-
-    private static float[] MakeHistogram(HSL[] hslPixels)
-    {
-        var histogram = new float[361];
-        for (int i = 0; i < hslPixels.Length; i++)
-        {
-            var pixel = hslPixels[i];
-            var lightnessScore = (50 - Math.Abs(pixel.L - 50)) / 50.0f;
-            var saturationScore = (float)Math.Pow(pixel.S / 100f, 2);
-            var finalScore = saturationScore * lightnessScore;
-            if (finalScore > _scoreCutoff)
-                histogram[pixel.H] += (float)Math.Pow(finalScore, 4);
-        }
-        return histogram;
-    }
-
-    private static HSL[] GetHSLPixels(Image<Rgb24> image)
-    {
-        var rgbPixels = new Rgb24[image.Width * image.Height];
-        var hslPixels = new HSL[rgbPixels.Length];
-
-        image.CopyPixelDataTo(rgbPixels);
-        for (int i = 0; i < rgbPixels.Length; i++)
-        {
-            var pixel = rgbPixels[i];
-            hslPixels[i] = ColorConverter.RgbToHsl(new(pixel.R, pixel.G, pixel.B));
-        }
-
-        return hslPixels;
+        if (weights.All(w => w == 0))
+            Array.Fill(weights, 1);
+        return (pixels, weights);
     }
 }

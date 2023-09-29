@@ -11,6 +11,7 @@ IHost host = Host.CreateDefaultBuilder(args)
             .BindConfiguration(nameof(AppSettings))
             .Validate(opt => opt.Validate());
         services.AddHass();
+        services.AddWLed();
     })
     .Build();
 
